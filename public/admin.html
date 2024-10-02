@@ -5,6 +5,7 @@
     <title>재고 관리 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
+        /* 스타일 코드 (기존과 동일) */
         body {
             font-family: 'Gowun Dodum', sans-serif;
             background-color: #f2f2f2;  /* 전체 배경색을 부드러운 회색으로 변경 */
@@ -68,6 +69,12 @@
             background-color: #d84315;
         }
     </style>
+
+    <!-- Firebase SDK 추가 -->
+    <!-- Firebase App (필수) -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -115,6 +122,20 @@
     </div>
 
     <script>
+        // Firebase 설정 정보 (자신의 Firebase 프로젝트 설정으로 대체해야 합니다)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            // ... 기타 설정
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+
+        // Firestore 인스턴스 생성
+        const db = firebase.firestore();
+
         // 매트 종류와 이름 연결을 위한 매핑 설정
         const matMapping = {
             "일반": "",
@@ -132,18 +153,14 @@
         // 관리자 페이지에서 데이터 불러오기
         async function loadAdminData() {
             try {
-                const response = await fetch("/api/getEntries");
-                if (response.ok) {
-                    const adminEntries = await response.json();
-                    processEntries(adminEntries);
-                    updateStockTable();
-                    updateAdminTable(adminEntries);
-                } else {
-                    alert("데이터 조회에 실패했습니다.");
-                }
+                const snapshot = await db.collection('entries').orderBy('timestamp', 'desc').get();
+                const adminEntries = snapshot.docs.map(doc => doc.data());
+                processEntries(adminEntries);
+                updateStockTable();
+                updateAdminTable(adminEntries);
             } catch (error) {
                 console.error(error);
-                alert("서버와 통신하는 중 오류가 발생했습니다.");
+                alert("데이터 조회에 실패했습니다.");
             }
         }
 
@@ -203,7 +220,7 @@
             const tableBody = document.getElementById("admin-table-body");
             tableBody.innerHTML = "";
 
-            adminEntries.reverse().forEach(entry => {
+            adminEntries.forEach(entry => {
                 const row = document.createElement("tr");
                 row.innerHTML = `<td>${entry.name}</td><td>${entry.category}</td><td>${getMatName(entry.category, entry.matName)}</td><td>${entry.color}</td><td>${entry.quantity}</td><td>${entry.notes}</td>`;
                 tableBody.appendChild(row);
@@ -220,18 +237,17 @@
         async function clearData() {
             if (confirm("정말 데이터를 초기화하시겠습니까?")) {
                 try {
-                    const response = await fetch("/api/clearEntries", {
-                        method: "POST"
+                    const batch = db.batch();
+                    const snapshot = await db.collection('entries').get();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
                     });
-                    if (response.ok) {
-                        alert("데이터가 초기화되었습니다.");
-                        window.location.reload();
-                    } else {
-                        alert("데이터 초기화에 실패했습니다.");
-                    }
+                    await batch.commit();
+                    alert("데이터가 초기화되었습니다.");
+                    window.location.reload();
                 } catch (error) {
                     console.error(error);
-                    alert("서버와 통신하는 중 오류가 발생했습니다.");
+                    alert("데이터 초기화에 실패했습니다.");
                 }
             }
         }
