@@ -1,9 +1,16 @@
 {
-  "name": "my-sqlite-project",
+  "name": "inventory-management",
   "version": "1.0.0",
+  "description": "매트 재고 관리 웹 애플리케이션",
   "main": "index.js",
-  "license": "ISC",
+  "scripts": {
+    "start": "vercel dev"
+  },
   "dependencies": {
-    "sqlite3": "^5.0.0"
-  }
+    "firebase-admin": "^11.0.0"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "박예찬",
+  "license": "MIT"
 }
