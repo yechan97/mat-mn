@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>입출고 페이지</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
+    <style>
+        body { font-family: 'Gowun Dodum', sans-serif; }
+        .container { width: 80%; margin: auto; text-align: center; }
+        button, select, input, textarea { margin: 10px; padding: 10px; border-radius: 5px; }
+    </style>
+    <script>
+        // 페이지 로드 시 데이터 불러오기
+        document.addEventListener("DOMContentLoaded", () => {
+            loadEntries();
+        });
+
+        // 최근 입출고 내역 추가 및 관리
+        function showConfirmation() {
+            const name = document.getElementById("name-select").value;
+            const category = document.getElementById("first-select").value;
+            const type = document.getElementById("second-select").value;
+            const color = document.getElementById("color-select").value;
+            const quantity = document.getElementById("quantity").value;
+            const notes = document.getElementById("notes").value;
+            
+            const entry = { name, category, type, color, quantity, notes, timestamp: Date.now() };
+            
+            let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            let adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
+
+            // 최근 내역에 추가 (24시간 내 유지)
+            recentEntries.push(entry);
+            localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
+
+            // 관리자 데이터에 추가 (영구 저장)
+            adminEntries.push(entry);
+            localStorage.setItem("adminEntries", JSON.stringify(adminEntries));
+
+            displayRecentEntries();
+            alert("정보가 추가되었습니다.");
+        }
+
+        // 최근 입출고 내역 불러오기
+        function loadEntries() {
+            const now = Date.now();
+            let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            recentEntries = recentEntries.filter(entry => now - entry.timestamp < 86400000); // 24시간 내
+            localStorage.setItem("recentEntries", JSON.stringify(recentEntries)); // 필터링된 데이터 저장
+            displayRecentEntries();
+        }
+
+        // 최근 입출고 내역 표시
+        function displayRecentEntries() {
+            const recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            const recentContainer = document.getElementById("recent-entries");
+            recentContainer.innerHTML = "<h3>최근 입출고 내역 (24시간 이내)</h3>";
+            recentEntries.forEach(entry => {
+                recentContainer.innerHTML += `<p>${entry.name} | ${entry.category} | ${entry.type} | ${entry.color} | ${entry.quantity}장 | ${entry.notes}</p>`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>입출고 페이지</h1>
+        <!-- 입력 폼 -->
+        <select id="name-select">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+        </select><br>
+        <select id="first-select">
+            <option value="일반">일반</option>
+            <option value="0.5t">0.5t</option>
+            <option value="리퍼브">리퍼브</option>
+        </select><br>
+        <select id="second-select">
+            <option>자이언트플러스</option>
+            <option>빅토리매트</option>
+        </select><br>
+        <select id="color-select">
+            <option>솔리드그레이</option>
+            <option>베이지코튼</option>
+            <option>프렌치바닐라</option>
+        </select><br>
+        <input type="number" id="quantity" placeholder="수량 입력 (장수)"><br>
+        <textarea id="notes">ex) 9.21 동탄 출고/9.21 동탄 반납/9.31 안산 입고</textarea><br>
+        <button onclick="showConfirmation()">추가</button>
+
+        <!-- 최근 입출고 내역 -->
+        <div id="recent-entries">
+            <h3>최근 입출고 내역 (24시간 이내)</h3>
+            <p>입출고 기록이 여기에 표시됩니다.</p>
+        </div>
+    </div>
+</body>
+</html>

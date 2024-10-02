@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 관리 페이지</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
+    <style>
+        body { font-family: 'Gowun Dodum', sans-serif; }
+        .container { width: 80%; margin: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #4fc3f7; color: white; }
+        button { margin-top: 20px; padding: 10px 20px; background-color: #4fc3f7; color: white; cursor: pointer; }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAdminData();
+        });
+
+        function loadAdminData() {
+            const adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
+            const tableBody = document.getElementById("admin-table-body");
+            adminEntries.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${entry.name}</td><td>${entry.category}</td><td>${entry.type}</td><td>${entry.color}</td><td>${entry.quantity}</td><td>${entry.notes}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function clearData() {
+            if (confirm("정말 데이터를 초기화하시겠습니까?")) {
+                localStorage.removeItem("adminEntries");
+                alert("데이터가 초기화되었습니다.");
+                window.location.reload();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>재고 관리 페이지</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>1차 분류</th>
+                    <th>매트 종류</th>
+                    <th>색상</th>
+                    <th>수량</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody id="admin-table-body"></tbody>
+        </table>
+        <button onclick="clearData()">초기화</button>
+    </div>
+</body>
+</html>
