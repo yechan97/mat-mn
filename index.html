@@ -27,6 +27,8 @@
             border-radius: 10px;
         }
         .form-group {
+            display: flex;
+            flex-wrap: wrap;
             margin-bottom: 15px;
         }
         label {
@@ -38,7 +40,10 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             margin-right: 10px;
+            margin-bottom: 10px;  /* 모바일에서 여유 공간 추가 */
             font-family: 'Gowun Dodum', sans-serif;
+            width: 100%;
+            box-sizing: border-box;  /* 모바일에서 overflow 방지 */
         }
         textarea {
             width: 100%;
@@ -48,11 +53,12 @@
             border-radius: 5px;
             resize: none;
             font-family: 'Gowun Dodum', sans-serif;
+            margin-bottom: 10px;
         }
         .buttons {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
+            flex-wrap: wrap;
         }
         button {
             padding: 10px 20px;
@@ -62,7 +68,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin: 0 10px;
+            margin: 5px;
             font-family: 'Gowun Dodum', sans-serif;
         }
         button:hover {
@@ -84,6 +90,26 @@
             margin: 5px 0;
             padding: 10px;
             border-radius: 5px;
+        }
+        /* 반응형 스타일링 */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;  /* 모바일 화면에서는 폭을 줄임 */
+            }
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            select, input[type="text"], input[type="number"], textarea {
+                width: 100%;  /* 각 입력 필드가 전체 폭을 차지하도록 */
+            }
+            .buttons {
+                flex-direction: column;  /* 버튼이 한 줄에 하나씩 표시되도록 */
+            }
+            button {
+                width: 100%;
+                margin: 5px 0;  /* 버튼 간격 조정 */
+            }
         }
     </style>
 </head>
@@ -188,7 +214,6 @@
             localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
             displayRecentEntries();
 
-            // 관리자 페이지와 데이터 동기화
             let adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
             adminEntries.push(entry);
             localStorage.setItem("adminEntries", JSON.stringify(adminEntries));
