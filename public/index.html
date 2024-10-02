@@ -5,7 +5,7 @@
     <title>입출고 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
-        /* 스타일 코드 */
+        /* 스타일 코드 (기존과 동일) */
         body {
             font-family: 'Gowun Dodum', sans-serif;
             background-color: #f2f2f2;
@@ -100,6 +100,12 @@
             border-radius: 5px;
         }
     </style>
+
+    <!-- Firebase SDK 추가 -->
+    <!-- Firebase App (필수) -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -170,6 +176,20 @@
     </div>
 
     <script>
+        // Firebase 설정 정보 (자신의 Firebase 프로젝트 설정으로 대체해야 합니다)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            // ... 기타 설정
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+
+        // Firestore 인스턴스 생성
+        const db = firebase.firestore();
+
         function toggleCustomInput(selectedValue) {
             const customNameInput = document.getElementById("custom-name");
             if (selectedValue === "직접입력") {
@@ -195,43 +215,30 @@
                 return;
             }
 
-            const entry = { name, category, matName, color, quantity, type, notes };
+            const entry = { name, category, matName, color, quantity, type, notes, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
 
             try {
-                const response = await fetch("/api/addEntry", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(entry)
-                });
-
-                if (response.ok) {
-                    alert("데이터가 성공적으로 추가되었습니다!");
-                    loadEntries();
-                } else {
-                    alert("데이터 추가에 실패했습니다.");
-                }
+                await db.collection('entries').add(entry);
+                alert("데이터가 성공적으로 추가되었습니다!");
+                loadEntries();
             } catch (error) {
                 console.error(error);
-                alert("서버와 통신하는 중 오류가 발생했습니다.");
+                alert("데이터 추가에 실패했습니다.");
             }
         }
 
         async function loadEntries() {
             try {
-                const response = await fetch("/api/getEntries");
-                if (response.ok) {
-                    const entries = await response.json();
-                    const recentContainer = document.getElementById("recent-entries");
-                    recentContainer.innerHTML = "";
-                    entries.slice(-10).reverse().forEach(entry => {
-                        recentContainer.innerHTML += `<div class="entry">${entry.name} | ${entry.category} | ${entry.matName} | ${entry.color} | ${entry.quantity}장 (${entry.type}) | ${entry.notes}</div>`;
-                    });
-                } else {
-                    alert("데이터 조회에 실패했습니다.");
-                }
+                const snapshot = await db.collection('entries').orderBy('timestamp', 'desc').limit(10).get();
+                const entries = snapshot.docs.map(doc => doc.data());
+                const recentContainer = document.getElementById("recent-entries");
+                recentContainer.innerHTML = "";
+                entries.forEach(entry => {
+                    recentContainer.innerHTML += `<div class="entry">${entry.name} | ${entry.category} | ${entry.matName} | ${entry.color} | ${entry.quantity}장 (${entry.type}) | ${entry.notes}</div>`;
+                });
             } catch (error) {
                 console.error(error);
-                alert("서버와 통신하는 중 오류가 발생했습니다.");
+                alert("데이터 조회에 실패했습니다.");
             }
         }
 
