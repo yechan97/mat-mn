@@ -1,8 +1,17 @@
 {
-  "name": "your-project-name",
+  "name": "inventory-management",
   "version": "1.0.0",
+  "description": "매트 재고 관리 웹 애플리케이션",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
   "dependencies": {
-    "firebase-admin": "^11.0.0",
+    "firebase-admin": "^11.0.1",
     "cors": "^2.8.5"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT"
 }
