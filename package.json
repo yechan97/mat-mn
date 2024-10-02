@@ -1,0 +1,9 @@
+{
+  "name": "my-sqlite-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "sqlite3": "^5.0.0"
+  }
+}
