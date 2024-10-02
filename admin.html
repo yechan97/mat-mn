@@ -5,28 +5,106 @@
     <title>재고 관리 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
-        body { font-family: 'Gowun Dodum', sans-serif; }
-        .container { width: 80%; margin: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #4fc3f7; color: white; }
-        button { margin-top: 20px; padding: 10px 20px; background-color: #4fc3f7; color: white; cursor: pointer; }
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            padding: 10px;
+            background-color: #4fc3f7;
+            color: #fff;
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4fc3f7;
+            color: white;
+        }
+        .total-cell {
+            background-color: #e1f5fe;
+            font-weight: bold;
+        }
     </style>
     <script>
+        // 전체 재고 데이터를 관리할 객체
+        let stockData = {
+            "자이언트플러스": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "자이언트플러스 R": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "자이언트플러스 0.5": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "빅토리매트": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "빅토리매트 R": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "빅토리 0.5T": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 }
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
-            loadAdminData();
+            loadAdminData();  // 초기 데이터 로드
+            updateStockTable();  // 테이블 업데이트
         });
 
+        // 관리자 페이지에서 데이터 불러오기
         function loadAdminData() {
             const adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
             const tableBody = document.getElementById("admin-table-body");
+
+            // 테이블에 데이터 추가
             adminEntries.forEach(entry => {
                 const row = document.createElement("tr");
                 row.innerHTML = `<td>${entry.name}</td><td>${entry.category}</td><td>${entry.type}</td><td>${entry.color}</td><td>${entry.quantity}</td><td>${entry.notes}</td>`;
                 tableBody.appendChild(row);
+
+                // 입출고 내역에 따른 수량 업데이트
+                if (entry.notes.includes("입고")) {
+                    stockData[entry.type][entry.color] += parseInt(entry.quantity);
+                } else if (entry.notes.includes("출고")) {
+                    stockData[entry.type][entry.color] -= parseInt(entry.quantity);
+                }
             });
         }
 
+        // 재고 테이블 업데이트 함수
+        function updateStockTable() {
+            const tableBody = document.getElementById("stock-table-body");
+
+            // 기존 행 모두 삭제
+            tableBody.innerHTML = "";
+
+            // 새로운 행 추가
+            for (const type in stockData) {
+                const colors = stockData[type];
+                const row = document.createElement("tr");
+                let total = 0;
+
+                row.innerHTML = `<td>${type}</td>`;
+                for (const color in colors) {
+                    row.innerHTML += `<td>${colors[color]}장</td>`;
+                    total += colors[color];
+                }
+                row.innerHTML += `<td class="total-cell">${total}장</td>`;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // 재고 초기화 함수
         function clearData() {
             if (confirm("정말 데이터를 초기화하시겠습니까?")) {
                 localStorage.removeItem("adminEntries");
@@ -39,6 +117,28 @@
 <body>
     <div class="container">
         <h1>재고 관리 페이지</h1>
+
+        <!-- 재고 테이블 -->
+        <table id="stock-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">매트 종류</th>
+                    <th colspan="3">색상</th>
+                    <th rowspan="2">합계</th>
+                </tr>
+                <tr>
+                    <th>프렌치바닐라</th>
+                    <th>솔리드그레이</th>
+                    <th>베이지코튼</th>
+                </tr>
+            </thead>
+            <tbody id="stock-table-body">
+                <!-- 동적으로 재고가 여기에 추가될 것임 -->
+            </tbody>
+        </table>
+
+        <!-- 데이터 기록 내역 -->
+        <h3>입출고 기록 내역</h3>
         <table>
             <thead>
                 <tr>
@@ -50,8 +150,12 @@
                     <th>비고</th>
                 </tr>
             </thead>
-            <tbody id="admin-table-body"></tbody>
+            <tbody id="admin-table-body">
+                <!-- 데이터가 여기에 동적으로 추가될 것임 -->
+            </tbody>
         </table>
+
+        <!-- 초기화 버튼 -->
         <button onclick="clearData()">초기화</button>
     </div>
 </body>
