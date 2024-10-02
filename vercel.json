@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.js": {
-      "runtime": "@vercel/node@18.0.0"
-    }
-  },
   "routes": [
     { "src": "/api/addEntry", "dest": "/api/addEntry.js" },
     { "src": "/api/getEntries", "dest": "/api/getEntries.js" }
