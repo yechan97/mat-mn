@@ -5,15 +5,68 @@
     <title>재고 관리 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
-        /* 스타일 코드 */
         body {
             font-family: 'Gowun Dodum', sans-serif;
-            background-color: #f2f2f2;
+            background-color: #f2f2f2;  /* 전체 배경색을 부드러운 회색으로 변경 */
             margin: 0;
             padding: 20px;
         }
-        /* ... (기존 스타일 코드 유지) ... */
-        /* 아래 스타일 코드는 기존 코드와 동일하므로 생략했습니다 */
+        .container {
+            width: 90%;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            padding: 10px;
+            background-color: #6a9fb5;  /* 차분한 파란색 배경 */
+            color: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            color: #333333;  /* 텍스트 색상을 진한 회색으로 설정 */
+        }
+        th {
+            background-color: #8bc34a;  /* 헤더 배경을 연두색으로 설정 */
+            color: #ffffff;
+        }
+        .total-cell {
+            background-color: #c5e1a5;  /* 합계 셀은 연한 연두색 배경 */
+            font-weight: bold;
+            color: #33691e;  /* 진한 녹색 텍스트 */
+        }
+        .record-table h3 {
+            text-align: center;
+            background-color: #8bc34a;  /* 연두색 배경 */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff7043;  /* 오렌지색 버튼 */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #d84315;
+        }
     </style>
 </head>
 <body>
