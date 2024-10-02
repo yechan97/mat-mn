@@ -5,6 +5,6 @@
     "node": "16.x"
   },
   "dependencies": {
-    "mongodb": "^4.4.0"
+    "sqlite3": "^5.0.0"
   }
 }
