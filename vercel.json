@@ -20,3 +20,6 @@
     }
   ]
 }
+git add vercel.json
+git commit -m "Fix vercel.json structure"
+git push origin main
