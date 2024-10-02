@@ -1,16 +1,8 @@
 {
-  "name": "inventory-management",
+  "name": "your-project-name",
   "version": "1.0.0",
-  "description": "매트 재고 관리 웹 애플리케이션",
-  "main": "index.js",
-  "scripts": {
-    "start": "vercel dev"
-  },
   "dependencies": {
-    "firebase-admin": "^11.0.0"
-  },
-  "devDependencies": {},
-  "keywords": [],
-  "author": "박예찬",
-  "license": "MIT"
+    "firebase-admin": "^11.0.0",
+    "cors": "^2.8.5"
+  }
 }
