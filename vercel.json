@@ -3,5 +3,11 @@
   "routes": [
     { "src": "/api/addEntry", "dest": "/api/addEntry.js" },
     { "src": "/api/getEntries", "dest": "/api/getEntries.js" }
+    {
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
+}
+
   ]
 }
