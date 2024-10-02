@@ -22,7 +22,7 @@
         h1 {
             text-align: center;
             padding: 10px;
-            background-color: #6a9fb5; /* 차분한 파란색 */
+            background-color: #6a9fb5;
             color: #ffffff;
             border-radius: 10px;
         }
@@ -38,6 +38,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             margin-right: 10px;
+            font-family: 'Gowun Dodum', sans-serif;
         }
         textarea {
             width: 100%;
@@ -46,6 +47,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             resize: none;
+            font-family: 'Gowun Dodum', sans-serif;
         }
         .buttons {
             display: flex;
@@ -54,13 +56,14 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #ff7043;  /* 오렌지색 버튼 */
+            background-color: #ff7043;
             color: #ffffff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             margin: 0 10px;
+            font-family: 'Gowun Dodum', sans-serif;
         }
         button:hover {
             background-color: #d84315;
@@ -70,10 +73,11 @@
         }
         .recent-entries h3 {
             text-align: center;
-            background-color: #8bc34a;  /* 연한 초록색 */
+            background-color: #8bc34a;
             padding: 10px;
             border-radius: 5px;
             color: white;
+            font-family: 'Gowun Dodum', sans-serif;
         }
         .entry {
             background: #e8f5e9;
@@ -103,7 +107,6 @@
                 <option>홍지희</option>
                 <option>직접입력</option>
             </select>
-            <!-- 사용자 입력 이름 필드 (숨김) -->
             <input type="text" id="custom-name" placeholder="이름 입력" style="display: none;">
         </div>
 
@@ -153,10 +156,9 @@
     </div>
 
     <script>
-        // 최근 내역 초기화 및 데이터 관리
         document.addEventListener("DOMContentLoaded", () => {
-            loadRecentEntries(); // 초기 데이터 로드
-            resetEntriesOnHour(); // 매 정각 초기화
+            loadRecentEntries();  // 초기 데이터 로드
+            resetEntriesOnHour(); // 정각마다 초기화
         });
 
         // 이름 선택 시 사용자 입력 필드 활성화
@@ -166,7 +168,7 @@
                 customNameInput.style.display = "inline";
             } else {
                 customNameInput.style.display = "none";
-                customNameInput.value = ""; // 초기화
+                customNameInput.value = "";  // 초기화
             }
         }
 
@@ -180,12 +182,20 @@
             const color = document.getElementById("mat-color").value;
             const quantity = document.getElementById("quantity").value;
             const notes = document.getElementById("notes").value;
+
+            // 입출고 데이터 객체 생성
             const entry = { name, category, matName, color, quantity, type, notes };
 
+            // 최근 내역 업데이트
             let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
             recentEntries.push(entry);
             localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
             displayRecentEntries();
+
+            // 관리자 페이지와 데이터 동기화
+            let adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
+            adminEntries.push(entry);
+            localStorage.setItem("adminEntries", JSON.stringify(adminEntries));
         }
 
         // 최근 내역 표시
@@ -205,7 +215,7 @@
             setTimeout(() => {
                 localStorage.removeItem("recentEntries");
                 displayRecentEntries();
-                resetEntriesOnHour(); // 다음 정각을 다시 설정
+                resetEntriesOnHour();  // 다음 정각을 다시 설정
             }, millisTillNextHour);
         }
 
