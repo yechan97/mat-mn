@@ -2,7 +2,7 @@
 const { MongoClient } = require("mongodb");
 
 module.exports = async (req, res) => {
-  const uri = "YOUR_MONGODB_CONNECTION_STRING";
+  const uri = "mongodb+srv://admin:aw0909@cluster0.uqndf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
   const client = new MongoClient(uri);
 
   try {
