@@ -5,7 +5,7 @@
     <title>입출고 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
-        /* 스타일 코드 (기존과 동일) */
+        /* 스타일 코드 */
         body {
             font-family: 'Gowun Dodum', sans-serif;
             background-color: #f2f2f2;
@@ -102,10 +102,35 @@
     </style>
 
     <!-- Firebase SDK 추가 -->
-    <!-- Firebase App (필수) -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <!-- Firebase Firestore SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script type="module">
+        // Firebase SDKs 추가
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        // Firebase 설정 정보 (자신의 Firebase 프로젝트 설정으로 대체)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            // 기타 설정
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+
+        // Firestore 인스턴스 생성
+        const db = getFirestore(app);
+
+        // 전역 변수로 필요한 함수와 변수 설정
+        window.db = db;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.limit = limit;
+        window.getDocs = getDocs;
+        window.serverTimestamp = serverTimestamp;
+    </script>
 </head>
 <body>
     <div class="container">
@@ -176,20 +201,6 @@
     </div>
 
     <script>
-        // Firebase 설정 정보 (자신의 Firebase 프로젝트 설정으로 대체해야 합니다)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            // ... 기타 설정
-        };
-
-        // Firebase 초기화
-        firebase.initializeApp(firebaseConfig);
-
-        // Firestore 인스턴스 생성
-        const db = firebase.firestore();
-
         function toggleCustomInput(selectedValue) {
             const customNameInput = document.getElementById("custom-name");
             if (selectedValue === "직접입력") {
@@ -215,10 +226,10 @@
                 return;
             }
 
-            const entry = { name, category, matName, color, quantity, type, notes, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            const entry = { name, category, matName, color, quantity, type, notes, timestamp: serverTimestamp() };
 
             try {
-                await db.collection('entries').add(entry);
+                await addDoc(collection(db, 'entries'), entry);
                 alert("데이터가 성공적으로 추가되었습니다!");
                 loadEntries();
             } catch (error) {
@@ -229,8 +240,9 @@
 
         async function loadEntries() {
             try {
-                const snapshot = await db.collection('entries').orderBy('timestamp', 'desc').limit(10).get();
-                const entries = snapshot.docs.map(doc => doc.data());
+                const q = query(collection(db, 'entries'), orderBy('timestamp', 'desc'), limit(10));
+                const querySnapshot = await getDocs(q);
+                const entries = querySnapshot.docs.map(doc => doc.data());
                 const recentContainer = document.getElementById("recent-entries");
                 recentContainer.innerHTML = "";
                 entries.forEach(entry => {
