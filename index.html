@@ -153,6 +153,24 @@
     </div>
 
     <script>
+        // 최근 내역 초기화 및 데이터 관리
+        document.addEventListener("DOMContentLoaded", () => {
+            loadRecentEntries(); // 초기 데이터 로드
+            resetEntriesOnHour(); // 매 정각 초기화
+        });
+
+        // 이름 선택 시 사용자 입력 필드 활성화
+        function toggleCustomInput(selectedValue) {
+            const customNameInput = document.getElementById("custom-name");
+            if (selectedValue === "직접입력") {
+                customNameInput.style.display = "inline";
+            } else {
+                customNameInput.style.display = "none";
+                customNameInput.value = ""; // 초기화
+            }
+        }
+
+        // 내역 추가 함수
         function addEntry(type) {
             const name = document.getElementById("name-select").value === "직접입력"
                 ? document.getElementById("custom-name").value
@@ -164,19 +182,37 @@
             const notes = document.getElementById("notes").value;
             const entry = { name, category, matName, color, quantity, type, notes };
 
-            // 최근 입출고 내역 업데이트
             let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
             recentEntries.push(entry);
             localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
             displayRecentEntries();
-
-            // 관리자 페이지와 데이터 동기화 (adminEntries로 저장)
-            let adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
-            adminEntries.push(entry);
-            localStorage.setItem("adminEntries", JSON.stringify(adminEntries));
         }
 
-        // 정각 초기화 등 추가 기능은 이전과 동일
+        // 최근 내역 표시
+        function displayRecentEntries() {
+            const recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            const recentContainer = document.getElementById("recent-entries");
+            recentContainer.innerHTML = "";
+            recentEntries.forEach(entry => {
+                recentContainer.innerHTML += `<div class="entry">${entry.name} | ${entry.category} | ${entry.matName} | ${entry.color} | ${entry.quantity}장 (${entry.type}) | ${entry.notes}</div>`;
+            });
+        }
+
+        // 정각마다 최근 내역 초기화
+        function resetEntriesOnHour() {
+            const now = new Date();
+            const millisTillNextHour = (60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
+            setTimeout(() => {
+                localStorage.removeItem("recentEntries");
+                displayRecentEntries();
+                resetEntriesOnHour(); // 다음 정각을 다시 설정
+            }, millisTillNextHour);
+        }
+
+        // 초기 데이터 로드
+        function loadRecentEntries() {
+            displayRecentEntries();
+        }
     </script>
 </body>
 </html>
