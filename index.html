@@ -5,94 +5,214 @@
     <title>입출고 페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
     <style>
-        body { font-family: 'Gowun Dodum', sans-serif; }
-        .container { width: 80%; margin: auto; text-align: center; }
-        button, select, input, textarea { margin: 10px; padding: 10px; border-radius: 5px; }
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            padding: 10px;
+            background-color: #6a9fb5; /* 차분한 파란색 */
+            color: #ffffff;
+            border-radius: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        select, input[type="text"], input[type="number"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ff7043;  /* 오렌지색 버튼 */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background-color: #d84315;
+        }
+        .recent-entries {
+            margin-top: 30px;
+        }
+        .recent-entries h3 {
+            text-align: center;
+            background-color: #8bc34a;  /* 연한 초록색 */
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        .entry {
+            background: #e8f5e9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
-    <script>
-        // 페이지 로드 시 데이터 불러오기
-        document.addEventListener("DOMContentLoaded", () => {
-            loadEntries();
-        });
-
-        // 최근 입출고 내역 추가 및 관리
-        function showConfirmation() {
-            const name = document.getElementById("name-select").value;
-            const category = document.getElementById("first-select").value;
-            const type = document.getElementById("second-select").value;
-            const color = document.getElementById("color-select").value;
-            const quantity = document.getElementById("quantity").value;
-            const notes = document.getElementById("notes").value;
-            
-            const entry = { name, category, type, color, quantity, notes, timestamp: Date.now() };
-            
-            let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
-            let adminEntries = JSON.parse(localStorage.getItem("adminEntries")) || [];
-
-            // 최근 내역에 추가 (24시간 내 유지)
-            recentEntries.push(entry);
-            localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
-
-            // 관리자 데이터에 추가 (영구 저장)
-            adminEntries.push(entry);
-            localStorage.setItem("adminEntries", JSON.stringify(adminEntries));
-
-            displayRecentEntries();
-            alert("정보가 추가되었습니다.");
-        }
-
-        // 최근 입출고 내역 불러오기
-        function loadEntries() {
-            const now = Date.now();
-            let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
-            recentEntries = recentEntries.filter(entry => now - entry.timestamp < 86400000); // 24시간 내
-            localStorage.setItem("recentEntries", JSON.stringify(recentEntries)); // 필터링된 데이터 저장
-            displayRecentEntries();
-        }
-
-        // 최근 입출고 내역 표시
-        function displayRecentEntries() {
-            const recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
-            const recentContainer = document.getElementById("recent-entries");
-            recentContainer.innerHTML = "<h3>최근 입출고 내역 (24시간 이내)</h3>";
-            recentEntries.forEach(entry => {
-                recentContainer.innerHTML += `<p>${entry.name} | ${entry.category} | ${entry.type} | ${entry.color} | ${entry.quantity}장 | ${entry.notes}</p>`;
-            });
-        }
-    </script>
 </head>
 <body>
     <div class="container">
         <h1>입출고 페이지</h1>
-        <!-- 입력 폼 -->
-        <select id="name-select">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-        </select><br>
-        <select id="first-select">
-            <option value="일반">일반</option>
-            <option value="0.5t">0.5t</option>
-            <option value="리퍼브">리퍼브</option>
-        </select><br>
-        <select id="second-select">
-            <option>자이언트플러스</option>
-            <option>빅토리매트</option>
-        </select><br>
-        <select id="color-select">
-            <option>솔리드그레이</option>
-            <option>베이지코튼</option>
-            <option>프렌치바닐라</option>
-        </select><br>
-        <input type="number" id="quantity" placeholder="수량 입력 (장수)"><br>
-        <textarea id="notes">ex) 9.21 동탄 출고/9.21 동탄 반납/9.31 안산 입고</textarea><br>
-        <button onclick="showConfirmation()">추가</button>
+
+        <!-- 이름 선택 -->
+        <div class="form-group">
+            <label for="name-select">기사 이름:</label>
+            <select id="name-select" onchange="toggleCustomInput(this.value)">
+                <option>김수재</option>
+                <option>문경훈</option>
+                <option>방춘혁</option>
+                <option>홍현철</option>
+                <option>용석화</option>
+                <option>정승훈</option>
+                <option>최동선</option>
+                <option>홍명희</option>
+                <option>홍기주</option>
+                <option>홍지희</option>
+                <option>직접입력</option>
+            </select>
+            <!-- 사용자 입력 이름 필드 (숨김) -->
+            <input type="text" id="custom-name" placeholder="이름 입력" style="display: none;">
+        </div>
+
+        <!-- 매트 종류, 색상, 수량 입력 -->
+        <div class="form-group">
+            <label for="mat-type">1차 분류:</label>
+            <select id="mat-type">
+                <option>일반</option>
+                <option>리퍼브</option>
+                <option>0.5t</option>
+            </select>
+
+            <label for="mat-name">매트 종류:</label>
+            <select id="mat-name">
+                <option>자이언트플러스</option>
+                <option>빅토리매트</option>
+            </select>
+
+            <label for="mat-color">색상:</label>
+            <select id="mat-color">
+                <option>프렌치바닐라</option>
+                <option>솔리드그레이</option>
+                <option>베이지코튼</option>
+            </select>
+
+            <label for="quantity">수량:</label>
+            <input type="number" id="quantity" min="1" value="1">
+        </div>
+
+        <!-- 비고 입력 -->
+        <div class="form-group">
+            <label for="notes">비고:</label>
+            <textarea id="notes" placeholder="비고 내용을 입력하세요."></textarea>
+        </div>
+
+        <!-- 입고/출고 버튼 -->
+        <div class="buttons">
+            <button onclick="addEntry('입고')">입고</button>
+            <button onclick="addEntry('출고')">출고</button>
+        </div>
 
         <!-- 최근 입출고 내역 -->
-        <div id="recent-entries">
-            <h3>최근 입출고 내역 (24시간 이내)</h3>
-            <p>입출고 기록이 여기에 표시됩니다.</p>
+        <div class="recent-entries">
+            <h3>최근 입출고 내역 (정각마다 초기화)</h3>
+            <div id="recent-entries"></div>
         </div>
     </div>
+
+    <script>
+        // 최근 내역 초기화 및 데이터 관리
+        document.addEventListener("DOMContentLoaded", () => {
+            loadRecentEntries(); // 초기 데이터 로드
+            resetEntriesOnHour(); // 매 정각 초기화
+        });
+
+        // 이름 선택 시 사용자 입력 필드 활성화
+        function toggleCustomInput(selectedValue) {
+            const customNameInput = document.getElementById("custom-name");
+            if (selectedValue === "직접입력") {
+                customNameInput.style.display = "inline";
+            } else {
+                customNameInput.style.display = "none";
+                customNameInput.value = ""; // 초기화
+            }
+        }
+
+        // 내역 추가 함수
+        function addEntry(type) {
+            const name = document.getElementById("name-select").value === "직접입력"
+                ? document.getElementById("custom-name").value
+                : document.getElementById("name-select").value;
+            const category = document.getElementById("mat-type").value;
+            const matName = document.getElementById("mat-name").value;
+            const color = document.getElementById("mat-color").value;
+            const quantity = document.getElementById("quantity").value;
+            const notes = document.getElementById("notes").value;
+            const entry = { name, category, matName, color, quantity, type, notes };
+
+            let recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            recentEntries.push(entry);
+            localStorage.setItem("recentEntries", JSON.stringify(recentEntries));
+            displayRecentEntries();
+        }
+
+        // 최근 내역 표시
+        function displayRecentEntries() {
+            const recentEntries = JSON.parse(localStorage.getItem("recentEntries")) || [];
+            const recentContainer = document.getElementById("recent-entries");
+            recentContainer.innerHTML = "";
+            recentEntries.forEach(entry => {
+                recentContainer.innerHTML += `<div class="entry">${entry.name} | ${entry.category} | ${entry.matName} | ${entry.color} | ${entry.quantity}장 (${entry.type}) | ${entry.notes}</div>`;
+            });
+        }
+
+        // 정각마다 최근 내역 초기화
+        function resetEntriesOnHour() {
+            const now = new Date();
+            const millisTillNextHour = (60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
+            setTimeout(() => {
+                localStorage.removeItem("recentEntries");
+                displayRecentEntries();
+                resetEntriesOnHour(); // 다음 정각을 다시 설정
+            }, millisTillNextHour);
+        }
+
+        // 초기 데이터 로드
+        function loadRecentEntries() {
+            displayRecentEntries();
+        }
+    </script>
 </body>
 </html>
