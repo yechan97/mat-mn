@@ -2,21 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/*.js",
+      "src": "api/addEntry.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/getEntries.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    }
-  ],
-  "redirects": [
+      "src": "/api/addEntry",
+      "dest": "/api/addEntry.js"
+    },
     {
-      "source": "/admin",
-      "destination": "/admin.html",
-      "permanent": true
+      "src": "/api/getEntries",
+      "dest": "/api/getEntries.js"
     }
   ]
 }
