@@ -1,0 +1,7 @@
+{
+  "name": "mat-management",
+  "version": "1.0.0",
+  "dependencies": {
+    "mongodb": "^4.4.0"
+  }
+}
