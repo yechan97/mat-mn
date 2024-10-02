@@ -1,18 +1,16 @@
 {
-  "redirects": [
-    {
-      "source": "/admin",
-      "destination": "/admin.html",
-      "permanent": true
-    }
-  ]
-}
-{
   "version": 2,
   "builds": [
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" }
+  ],
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html",
+      "permanent": true
+    }
   ]
 }
