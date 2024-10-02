@@ -1,23 +1,11 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/addEntry.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/getEntries.js",
-      "use": "@vercel/node"
-    }
+    { "src": "api/addEntry.js", "use": "@vercel/node" },
+    { "src": "api/getEntries.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/api/addEntry",
-      "dest": "/api/addEntry.js"
-    },
-    {
-      "src": "/api/getEntries",
-      "dest": "/api/getEntries.js"
-    }
+    { "src": "/api/addEntry", "dest": "/api/addEntry.js" },
+    { "src": "/api/getEntries", "dest": "/api/getEntries.js" }
   ]
 }
