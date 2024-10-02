@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/*.js": {
-      "runtime": "nodejs18.x"  // 올바른 Node.js 런타임 버전 설정 (16.x 또는 18.x 권장)
+      "runtime": "nodejs18.x"
     }
   },
   "routes": [
