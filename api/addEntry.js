@@ -1,39 +1,26 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+// api/addEntry.js
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json'); // Firebase 콘솔에서 이 파일을 다운로드해야 합니다.
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
+
+const db = admin.firestore();
 
 module.exports = async (req, res) => {
-  const dbPath = path.resolve('data.db');
-  const db = new sqlite3.Database(dbPath);
+  if (req.method === 'POST') {
+    const entry = req.body;
 
-  try {
-    if (req.method === 'POST') {
-      const { name, type, color, quantity, comment } = req.body;
-
-      // 테이블 생성 (이미 존재하면 무시)
-      db.run(
-        `CREATE TABLE IF NOT EXISTS entries (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT,
-          type TEXT,
-          color TEXT,
-          quantity INTEGER,
-          comment TEXT
-        )`
-      );
-
-      // 데이터 삽입
-      const query = `INSERT INTO entries (name, type, color, quantity, comment) VALUES (?, ?, ?, ?, ?)`;
-      db.run(query, [name, type, color, quantity, comment], function (error) {
-        if (error) {
-          res.status(500).json({ message: 'Error adding entry', error });
-        } else {
-          res.status(200).json({ message: 'Entry added successfully!', id: this.lastID });
-        }
-      });
-    } else {
-      res.status(405).json({ message: 'Only POST requests are allowed' });
+    try {
+      await db.collection('entries').add(entry);
+      res.status(200).json({ message: 'Entry added successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error adding entry' });
     }
-  } finally {
-    db.close();
+  } else {
+    res.status(405).json({ error: 'Method not allowed' });
   }
 };
