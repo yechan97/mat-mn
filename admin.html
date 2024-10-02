@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Gowun Dodum', sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 20px;
         }
@@ -22,8 +22,8 @@
         h1 {
             text-align: center;
             padding: 10px;
-            background-color: #4fc3f7;
-            color: #fff;
+            background-color: #ffcc80;  /* 눈에 띄는 오렌지 계열 색상 */
+            color: #3e2723;  /* 진한 갈색 텍스트 */
             border-radius: 10px;
         }
         table {
@@ -35,14 +35,31 @@
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
+            color: #424242;
         }
         th {
-            background-color: #4fc3f7;
-            color: white;
+            background-color: #ffb74d;  /* 오렌지색 배경 */
+            color: #ffffff;  /* 흰색 텍스트 */
         }
         .total-cell {
-            background-color: #e1f5fe;
+            background-color: #ffe0b2;  /* 밝은 오렌지 */
             font-weight: bold;
+            color: #bf360c;
+        }
+        .highlight-row {
+            background-color: #fff3e0;  /* 옅은 베이지 */
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff7043;  /* 눈에 잘 띄는 오렌지 계열 */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d84315;  /* 진한 오렌지 */
         }
     </style>
     <script>
@@ -50,7 +67,7 @@
         let stockData = {
             "자이언트플러스": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
             "자이언트플러스 R": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
-            "자이언트플러스 0.5": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
+            "자이언트플러스 0.5T": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
             "빅토리매트": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
             "빅토리매트 R": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 },
             "빅토리 0.5T": { "프렌치바닐라": 0, "솔리드그레이": 0, "베이지코튼": 0 }
@@ -69,6 +86,7 @@
             // 테이블에 데이터 추가
             adminEntries.forEach(entry => {
                 const row = document.createElement("tr");
+                row.className = "highlight-row";  // 가독성 높은 행 색상 지정
                 row.innerHTML = `<td>${entry.name}</td><td>${entry.category}</td><td>${entry.type}</td><td>${entry.color}</td><td>${entry.quantity}</td><td>${entry.notes}</td>`;
                 tableBody.appendChild(row);
 
