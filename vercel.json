@@ -1,8 +1,8 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/addEntry.js", "use": "@vercel/node@18.0.0" },
-    { "src": "api/getEntries.js", "use": "@vercel/node@18.0.0" }
+    { "src": "api/addEntry.js", "use": "@vercel/node@16.x" },
+    { "src": "api/getEntries.js", "use": "@vercel/node@16.x" }
   ],
   "routes": [
     { "src": "/api/addEntry", "dest": "/api/addEntry.js" },
